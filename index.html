@@ -355,7 +355,7 @@ canvas{display:block;position:fixed;inset:0;width:100%!important;height:100%!imp
       </div>
       <div style="margin-bottom:14px;text-align:left">
         <label style="color:rgba(200,160,240,0.65);font-size:11px;display:block;margin-bottom:5px;letter-spacing:.5px">서버 주소 (자동 감지)</label>
-        <input id="multi-server-url" type="text" value="wss://three-d-escape-multi-server.onrender.com:10000"
+        <input id="multi-server-url" type="text" value="wss://three-d-escape-multi-server.onrender.com"
           style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(247,37,133,0.28);border-radius:10px;padding:10px 12px;color:#fff;font-size:12px;outline:none;caret-color:#f72585">
       </div>
       <button class="btn btn-multi" id="multi-join-btn" style="margin-bottom:12px">입장하기</button>
@@ -1381,8 +1381,7 @@ function openMultiplayer(){
   controls.autoRotate=true;
   ['cd0','cd1','cd2','cd3'].forEach(id=>{document.getElementById(id).value='';});
   // Pre-fill server URL
- let url = document.getElementById('multi-server-url').value.trim();
-if(url.endsWith('/')) url = url.slice(0, -1); // 끝에 슬래시가 있으면 지워버림
+  const urlInput=document.getElementById('multi-server-url');
   if(!urlInput.value){
     const auto=getAutoWsUrl();
     if(auto)urlInput.value=auto;
