@@ -1370,22 +1370,27 @@ let multiStartTime=null;
 let multiOpDone=false;
 let multiOpAlive=false;
 
+// Render relay — used whenever the current host can't serve WebSocket
+const RENDER_WS='wss://three-d-escape-multi-server.onrender.com/api/ws';
+
 function getAutoWsUrl(){
   if(location.protocol==='file:')return null;
-  const proto=location.protocol==='https:'?'wss:':'ws:';
-  return proto+'//'+location.host+'/api/ws';
+  const h=location.host;
+  // Only auto-detect for local dev or Replit — NOT for GitHub Pages, Netlify, etc.
+  if(h.startsWith('localhost')||h.startsWith('127.')||
+     h.includes('.replit.')||h.includes('.repl.co')||h.includes('.replit.app')){
+    const proto=location.protocol==='https:'?'wss:':'ws:';
+    return proto+'//'+h+'/api/ws';
+  }
+  return null;
 }
 
 function openMultiplayer(){
   showUI('multi-entry');
   controls.autoRotate=true;
   ['cd0','cd1','cd2','cd3'].forEach(id=>{document.getElementById(id).value='';});
-  // Pre-fill server URL
   const urlInput=document.getElementById('multi-server-url');
-  if(!urlInput.value){
-    const auto=getAutoWsUrl();
-    if(auto)urlInput.value=auto;
-  }
+  if(urlInput){urlInput.value=getAutoWsUrl()||RENDER_WS;}
 }
 
 function getCodeValue(){
@@ -1410,7 +1415,7 @@ function joinMultiRoom(){
   if(code.includes('_')||code.length!==4||isNaN(parseInt(code))){
     popup('코드 4자리를 입력하세요!',innerWidth/2,innerHeight*.5,'#ff6b6b');return;
   }
-  const serverUrl=(document.getElementById('multi-server-url').value||'').trim()||getAutoWsUrl();
+  const serverUrl=(document.getElementById('multi-server-url').value||'').trim()||getAutoWsUrl()||RENDER_WS;
   if(!serverUrl){
     popup('서버 주소를 입력하세요!',innerWidth/2,innerHeight*.5,'#ff6b6b');return;
   }
